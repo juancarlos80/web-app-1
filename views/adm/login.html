@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+
+    <title>Auntenticate</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/signin.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+    <form class="form-signin">      
+      <h1 class="h3 mb-3 font-weight-normal">Ingresa tus credenciales</h1>
+      <label for="inputUsuario" class="sr-only">Usuario</label>
+      <input type="text" id="inputUsuario" class="form-control" placeholder="Usuario" required autofocus>
+      <label for="inputPassword" class="sr-only">Clave</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="clave" required>
+      <!-- <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div> -->
+      
+      <div id="alert_login" class="alert alert-info" style="display:none">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        Los datos no son correctos, vuelva a intentarlo
+      </div>
+      
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button>
+      
+      
+      
+      <p class="mt-5 mb-3 text-muted">WiserKronox&copy; 2017-2018</p>
+    </form>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/adm.js"></script>
+    <script type="text/javascript">                                           
+       $(document).ready(function (){
+           init_login();
+       });           
+    </script> 
+  </body>
+</html>
