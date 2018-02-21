@@ -10,7 +10,7 @@ var c_user = require('./controllers/user');
 
 const app = express();
 app.use(session({
-    secret: process.env.SESSION_TOKEN, 
+    secret: process.env.SESSION_TOKEN_MONGO, 
     resave: true,
     saveUninitialized: true}));
 var app_session;
@@ -97,8 +97,9 @@ MongoClient.connect(process.env.URL_MONGO_DB, function(err, client) {
    client_db = client;
   
   
-   var listener = app.listen(process.env.PORT, function () {
+   var listener = app.listen( process.env.PORT_MONGO, function () {
      console.log('Running on port ' + listener.address().port);  
+     console.log('process.env.URL_MONGO_DB: '+process.env.URL_MONGO_DB);
      //console.log("---------------------------------");
      //console.log( c_partido.get_partidos_nivel(client_db, "Inicial"));  
    });  
