@@ -13,3 +13,26 @@ function init_login(){
     });
   });
 }
+
+function init_partidos(){      
+    
+  //Primero cargamos los partidos en el dashboard  
+  $.get('/partidos', function(response) {        
+    if( response.success ){
+        let count = 1;
+        response.partidos.forEach(function(partido) {      
+            //div_partidos += "<div class='col-sm'>"+partido.fecha+"</div>";        
+            $('#table_partidos tr:last').after("<tr>"+
+                    "<td>"+count+"</td>"+
+                    "<td>"+partido.equipo_1+"</td>"+
+                    "<td>"+partido.equipo_2+"</td>"+
+                    "<td>"+partido.fecha+"</td>"+
+                    "</tr>");
+            count++;
+      });
+    } else {
+      $('#table_partidos').empty();
+    }            
+    $("#loader_partidos").fadeOut();
+  });
+}
