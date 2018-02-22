@@ -1,0 +1,24 @@
+<form class="form-signin">
+  <h1 class="h3 mb-3 font-weight-normal">Registrar un partido</h1>
+  Equipo1: <select id="equipo_1" class="custom-select"></select>
+
+  Equipo2: <select id="equipo_2" class="custom-select"></select>
+
+  <div id="alert_registro" class="alert alert-warning mt-5" style="display:none">         
+    <div id="txt_alert"></div>
+  </div>
+
+  <label for="fecha" class="sr-only"> Fecha</label>
+  <div class="input-append date form_datetime">
+    Fecha: <input id="fecha" size="16" type="text" class="form-control" value="" placeholder="Fecha" required>
+    <span class="add-on"><i class="icon-th"></i></span>          
+  </div>
+
+  Nivel: <select id="nivel" class="custom-select"></select>                
+
+  <div class="row text-center mt-5">
+    <button type="submit" class="btn btn-success" >Registrar</button>
+    <a href="/adm" class="btn btn-danger ml-2" role="button">Cancelar</a>
+  </div>
+</form>
+          

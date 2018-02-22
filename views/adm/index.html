@@ -10,7 +10,8 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css">
+    
     <!-- Custom styles for this template -->
     <link href="/css/dashboard.css" rel="stylesheet">
   </head>
@@ -34,7 +35,7 @@
                 <a class="nav-link" href="#">Equipos</a>
             </li>            
             <li class="nav-item">
-                <a class="nav-link" href="#">usuarios</a>
+                <a class="nav-link" href="#">Usuarios</a>
             </li>            
         </ul>
         <ul class="navbar-nav px-3">
@@ -45,7 +46,10 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div id="main_container" class="container">
+      <div class="row pt-4 px-4">      
+        <button id="btn_nuevo" class="btn btn-success">Nuevo</button>
+      </div>
       <div class="row">        
         <main role="main" class="ml-sm-auto col-lg-10 pt-3 px-4">                    
           <h2>Partidos por jugar</h2>
@@ -64,18 +68,20 @@
             </table>
           </div>
         </main>        
-        </div>
-        <div id="loader_partidos" class="text-center">
-            <img src="https://cdn.glitch.com/9c4de69b-f9b0-488b-92bf-01fcb9ea22ee%2Floader.GIF?1519134332388" />
-        </div>      
+        </div>        
     </div>
+    <div id="loader" class="text-center">
+      <img src="https://cdn.glitch.com/9c4de69b-f9b0-488b-92bf-01fcb9ea22ee%2Floader.GIF?1519134332388" />
+    </div>      
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/js/jquery-3.3.1.min.js" ></script>    
-    <script src="/js/popper.min.js"></script>
+    <script src="/js/jquery-3.3.1.min.js" ></script>        
     <script src="/js/bootstrap.min.js"></script>   
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    
     <script src="/js/adm.js"></script>   
     <script type="text/javascript">                                           
        $(document).ready(function (){

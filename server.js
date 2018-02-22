@@ -34,6 +34,12 @@ var equipos = [
     grupo: 'A'
   },
   {
+    nombre: 'Bolivia',
+    nombre_corto: 'Bol',
+    url_bandera: 'banderas/bol.jpg',
+    grupo: 'B'
+  },
+  {
     nombre: 'Brasil',
     nombre_corto: 'bra',
     url_bandera: 'banderas/bar.jpg',
@@ -43,7 +49,25 @@ var equipos = [
     nombre: 'Colombia',
     nombre_corto: 'col',
     url_bandera: 'banderas/col.jpg',
+    grupo: 'A'
+  },  
+  {
+    nombre: 'Chile',
+    nombre_corto: 'cli',
+    url_bandera: 'banderas/cli.jpg',
     grupo: 'C'
+  },  
+  {
+    nombre: 'Costa Rica',
+    nombre_corto: 'cos',
+    url_bandera: 'banderas/cos.jpg',
+    grupo: 'B'
+  },  
+  {
+    nombre: 'Ecuador',
+    nombre_corto: 'ecu',
+    url_bandera: 'banderas/ecu.jpg',
+    grupo: 'A'
   },  
 ];
 
@@ -98,31 +122,21 @@ MongoClient.connect(process.env.URL_MONGO_DB, function(err, client) {
   
   
    var listener = app.listen( process.env.PORT_MONGO, function () {
-     console.log('Running on port ' + listener.address().port);  
-     console.log('process.env.URL_MONGO_DB: '+process.env.URL_MONGO_DB);
-     //console.log("---------------------------------");
-     //console.log( c_partido.get_partidos_nivel(client_db, "Inicial"));  
+     console.log('Running on port ' + listener.address().port);       
    });  
   
   
   
    /******************* Adm functions ************/
-
-   var user_adm = {
-      nombre: 'Administrador',
-      usuario: 'admin',
-      clave: 'wkx_1234567',
-      email: 'juancarlos.crespo@wiserkronox.com',
-      register_date: new Date()
-    }
-   //c_user.insert_user_adm( client_db, user_adm);
-  
-  
+     
 });
 
 app.get("/partidos", function (request, response) {    
   c_partido.get_partidos_nivel(client_db, "Inicial", response);  
 });
+
+
+/***************** Rutas para la administracion *****************************/
 
 app.get("/adm_login", function (request, response) {
   response.sendFile(__dirname + '/views/adm/login.html');
@@ -138,8 +152,7 @@ app.get("/adm", function (request, response) {
   }
 });
 
-app.post("/login_adm", function (request, response) {  
-  //response.send ( { success: true, user: request.query.user, pass: request.query.pass } );  
+app.post("/login_adm", function (request, response) {    
   c_user.login_user_pass(client_db,request.query.user, request.query.pass, request, response);
 });
 
@@ -154,6 +167,28 @@ app.get("/logout", function (request, response) {
   }); 
 });
 
+app.get("/adm/nuevo_partido", function (request, response) {
+  //app_session = request.session;
+  
+  //if( app_session.usuario ){  
+    response.sendFile(__dirname + '/views/adm/nuevo_partido.html');
+  /*} else {    
+    response.redirect('/adm_login');
+  }*/
+});
 
+app.get("/adm/get_partido_data", function (request, response) {
+  response.send({equipos: equipos, niveles: niveles});
+});
+
+app.post("/adm/set_partido", function (request, response) {    
+  app_session = request.session;
+  
+  if( app_session.usuario ){  
+    c_partido.set_partido(client_db, request.query.partido, response);
+  } else {    
+    response.redirect('/adm_login');
+  }
+});
 
 
