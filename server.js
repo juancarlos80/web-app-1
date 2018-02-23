@@ -7,6 +7,7 @@ var mongodb = require('mongodb');
 var util = require('./controllers/util');
 var c_partido = require('./controllers/partido');
 var c_user = require('./controllers/user');
+var c_equipo = require('./controllers/equipo');
 
 const app = express();
 app.use(session({
@@ -25,92 +26,64 @@ app.get("/", function (request, response) {
 });
 
 
-//Datos base de la app
-var equipos = [
+//Variables gloables
+var equipos = null;
+/*var equipos = [
   {
+    _id: '1',
     nombre: 'Argentina',
     nombre_corto: 'arg',
     url_bandera: 'banderas/arg.jpg',
     grupo: 'A'
   },
   {
+    _id: '2',
     nombre: 'Bolivia',
     nombre_corto: 'Bol',
     url_bandera: 'banderas/bol.jpg',
     grupo: 'B'
   },
   {
+    _id: '3',
     nombre: 'Brasil',
     nombre_corto: 'bra',
     url_bandera: 'banderas/bar.jpg',
     grupo: 'B'
   },
   {
+    _id: '4',
     nombre: 'Colombia',
     nombre_corto: 'col',
     url_bandera: 'banderas/col.jpg',
     grupo: 'A'
   },  
   {
+    _id: '5',
     nombre: 'Chile',
     nombre_corto: 'cli',
     url_bandera: 'banderas/cli.jpg',
     grupo: 'C'
   },  
   {
+    _id: '6',
     nombre: 'Costa Rica',
     nombre_corto: 'cos',
     url_bandera: 'banderas/cos.jpg',
     grupo: 'B'
   },  
   {
+    _id: '7',
     nombre: 'Ecuador',
     nombre_corto: 'ecu',
     url_bandera: 'banderas/ecu.jpg',
     grupo: 'A'
   },  
-];
-
-var niveles = ["Inicial", "Cuartos de Final", "Semifinal", "Tercer Lugar", "Primer Lugar"]; 
-
-/*var partidos_data = [
-  {
-    fecha: '2018-02-20',
-    equipo_1: 'Bolivia',
-    equipo_2: 'Argentina',
-    goles_e1: 1,
-    goles_e2: 0,
-    grupo_e1: "A",
-    grupo_e2: "B",
-    nivel: "Inicial"
-  },
-  {
-    fecha: '2018-02-21',
-    equipo_1: 'Alemania',
-    equipo_2: 'Brasil',    
-    grupo_e1: "C",
-    grupo_e2: "B",
-    nivel: "Inicial"
-  },
-  {
-    fecha: '2018-02-22',
-    equipo_1: 'Francia',
-    equipo_2: 'EEUU',
-    goles_e1: 0,
-    goles_e2: 0,
-    grupo_e1: "F",
-    grupo_e2: "D",
-    nivel: "Inicial"
-  },
-  {
-    fecha: '2018-02-23',
-    equipo_1: 'Uruguay',
-    equipo_2: 'Perú',    
-    grupo_e1: "B",
-    grupo_e2: "B",
-    nivel: "Inicial"
-  }
 ];*/
+
+//Valores a configurar para inicializar la applicacion
+var niveles = ["Inicial", "Cuartos de Final", "Semifinal", "Tercer Lugar", "Primer Lugar"]; 
+var grupos = ["A", "B", "C", "D"]; 
+
 var client_db;
 
 //Conecct to the database
@@ -128,15 +101,35 @@ MongoClient.connect(process.env.URL_MONGO_DB, function(err, client) {
   
   
    /******************* Adm functions ************/
-     
+   //Only one insert equipos   
+  /*var equipos_db = client_db.db("test").collection('equipos');        
+  equipos_db.insert(equipos, function (err, equips) {
+    if(err) {
+       console.log(err);         
+    } else {
+      console.log("insertados");
+      console.log(equips);
+    }
+  });*/     
+  
+  var equipos_db = client_db.db("test").collection('equipos');        
+  
+  equipos_db.find({}).toArray(function (err, equips) {
+     if(err) {
+       console.log(err);       
+     }                           
+     equipos = equips;       
+  });                                     
+  
 });
 
 app.get("/partidos", function (request, response) {    
   c_partido.get_partidos_nivel(client_db, "Inicial", response);  
 });
 
-
-/***************** Rutas para la administracion *****************************/
+/******************************************************************************************/
+/******************************* Rutas para la administracion *****************************/
+/******************************************************************************************/
 
 app.get("/adm_login", function (request, response) {
   response.sendFile(__dirname + '/views/adm/login.html');
@@ -167,14 +160,8 @@ app.get("/logout", function (request, response) {
   }); 
 });
 
-app.get("/adm/nuevo_partido", function (request, response) {
-  //app_session = request.session;
-  
-  //if( app_session.usuario ){  
-    response.sendFile(__dirname + '/views/adm/nuevo_partido.html');
-  /*} else {    
-    response.redirect('/adm_login');
-  }*/
+app.get("/adm/nuevo_partido", function (request, response) {  
+    response.sendFile(__dirname + '/views/adm/nuevo_partido.html');  
 });
 
 app.get("/adm/get_partido_data", function (request, response) {
@@ -191,4 +178,49 @@ app.post("/adm/set_partido", function (request, response) {
   }
 });
 
+//--------------------- Equipos --------------------------------
+app.get("/equipos", function (request, response) {      
+  response.send({success: true, equipos: equipos});  
+});
 
+app.get("/equipos_db", function (request, response) {  
+  var equipos_db = client_db.db("test").collection('equipos');        
+  
+  equipos_db.find({}).toArray(function (err, equips) {
+     if(err) {
+       console.log(err);       
+       response.send({success: false});
+     }                           
+     equipos = equips;  
+     console.log(equipos);
+     response.send({success: true, equipos: equipos});
+  }); 
+});
+
+app.get("/adm/equipos", function (request, response) {
+  app_session = request.session;
+  
+  if( app_session.usuario ){  
+    response.sendFile(__dirname + '/views/adm/equipos.html');
+  } else {
+    response.redirect('/adm_login');
+  }
+});
+
+app.get("/adm/get_equipo_data", function (request, response) {
+  response.send({grupos: grupos});
+});
+
+app.get("/adm/nuevo_equipo", function (request, response) {  
+    response.sendFile(__dirname + '/views/adm/nuevo_equipo.html');  
+});
+
+app.post("/adm/set_equipo", function (request, response) {    
+  app_session = request.session;
+  
+  if( app_session.usuario ){  
+    c_equipo.set_equipo(client_db, request.query.equipo, response);
+  } else {    
+    response.redirect('/adm_login');
+  }
+});

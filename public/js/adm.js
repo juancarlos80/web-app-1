@@ -100,6 +100,73 @@ function init_nuevo_partido(){
          $("#alert_login").fadeIn();
        }
     });
+  });  
+}    
+
+/*--------------------------- Equipos --------------------------------------*/
+function init_equipos(){      
+      
+  $.get('/equipos_db', function(response) {        
+    if( response.success ){
+        let count = 1;
+        response.equipos.forEach(function(equipo) {      
+            //div_partidos += "<div class='col-sm'>"+partido.fecha+"</div>";        
+            $('#table_equipos tr:last').after("<tr>"+
+                    "<td>"+count+"</td>"+
+                    "<td>"+equipo.nombre+"</td>"+
+                    "<td>"+equipo.nombre_corto+"</td>"+
+                    "<td><img src='../"+equipo.url_bandera+"' class='img-thumbnail' alt='"+equipo.url_bandera+"' /></td>"+
+                    "<td>"+equipo.grupo+"</td>"+
+                    "</tr>");
+            count++;
+      });
+    } else {
+      $('#table_equipos').empty();
+    }            
+    $("#loader").fadeOut();            
+  });      
+  
+  $("#btn_nuevo").click( function (){
+    $("#main_container").fadeOut();
+    $("#loader").fadeIn();
+    $.get('/adm/nuevo_equipo', function(response) {
+      $("#main_container").html(response);
+      init_nuevo_equipo();
+    });
   });
   
-}      
+  
+  function init_nuevo_equipo(){    
+    $.get('/adm/get_equipo_data', function(response) {
+      grupos = response.grupos;    
+
+      $.each(grupos, function() {
+        $("#grupo").append($("<option />").val(this).text(this));      
+      });        
+
+      $("#main_container").fadeIn();
+      $("#loader").fadeOut();
+    });
+
+  
+    $('form').submit(function(event) {    
+      event.preventDefault();      
+
+      var equipo = {
+        nombre: $("#nombre").val(),
+        nombre_corto: $("#nombre_corto").val(),
+        url_bandera: $("#url_bandera").val(),
+        grupo: $("#grupo").val()
+      };        
+
+      $.post('/adm/set_equipo?' + $.param({equipo: equipo}) , function(response) {
+         if( response.success ){
+           window.location.href = '/adm/equipos';
+         } else {
+           $("#alert_login").fadeIn();
+         }
+      });
+    });  
+}   
+  
+}

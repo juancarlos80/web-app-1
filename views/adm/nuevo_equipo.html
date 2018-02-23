@@ -1,0 +1,24 @@
+<form class="form-signin">
+  <h1 class="h3 mb-3 font-weight-normal">Registrar un equipo</h1>
+  
+  <label for="nombre" class="sr-only">Nombre</label>  
+  <input id="nombre" size="16" type="text" class="form-control" value="" placeholder="Nombre" required>
+  
+  <label for="nombre_corto" class="sr-only">Nombre Corto</label>  
+  <input id="nombre_corto" size="16" type="text" class="form-control" value="" placeholder="Nombre corto" required>
+  
+  <label for="url_bandera" class="sr-only">URL Bandera</label>  
+  <input id="url_bandera" size="16" type="text" class="form-control" value="" placeholder="URL Bandera" required>
+  
+  Grupo: <select id="grupo" class="custom-select"></select>      
+  
+  <div id="alert_registro" class="alert alert-warning mt-5" style="display:none">         
+    <div id="txt_alert"></div>
+  </div>
+  
+  <div class="row text-center mt-5">
+    <button type="submit" class="btn btn-success" >Registrar</button>
+    <a href="/adm/equipos" class="btn btn-danger ml-2" role="button">Cancelar</a>
+  </div>
+</form>
+          
