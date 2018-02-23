@@ -104,22 +104,54 @@ function init_nuevo_partido(){
 }    
 
 /*--------------------------- Equipos --------------------------------------*/
+var equipo_eli, equipo_edi;
+var equipos;
 function init_equipos(){      
       
   $.get('/equipos_db', function(response) {        
     if( response.success ){
-        let count = 1;
+        let count = 0;
+        equipos = response.equipos;
         response.equipos.forEach(function(equipo) {      
             //div_partidos += "<div class='col-sm'>"+partido.fecha+"</div>";        
             $('#table_equipos tr:last').after("<tr>"+
-                    "<td>"+count+"</td>"+
+                    "<td>"+(count+1)+"</td>"+
                     "<td>"+equipo.nombre+"</td>"+
                     "<td>"+equipo.nombre_corto+"</td>"+
                     "<td><img src='../"+equipo.url_bandera+"' class='img-thumbnail' alt='"+equipo.url_bandera+"' /></td>"+
                     "<td>"+equipo.grupo+"</td>"+
+                    "<td><button data-id='"+count+"' class='btn btn-editar'>Editar</button></td>"+
+                    "<td><button data-id='"+count+"' class='btn btn-eliminar' data-toggle='modal' data-target='#confirm-submit'>Eliminar</button></td>"+
                     "</tr>");
             count++;
       });
+      
+      $(".btn-editar").click( function (){
+        equipo_edi = equipos[ $(this).data("id") ];
+        $("#main_container").fadeOut();
+        $("#loader").fadeIn();
+        $.get('/adm/nuevo_equipo', function(response) {
+          $("#main_container").html(response);
+          init_nuevo_equipo();
+        });
+      });
+      
+      $(".btn-eliminar").click( function (){
+        equipo_eli = equipos[ $(this).data("id") ];
+        $("#msj_delete").html("Esta seguro de eliminar el equipo: <strong>"+equipo_eli.nombre+"</strong> y toda la informacion relacionada?");
+      });
+      
+      $("#btn_delete").click( function (){
+        $.post('/adm/del_equipo?' + $.param({equipo: equipo_eli}) , function(response) {
+          if( response.success ){
+            window.location.href = '/adm/equipos';
+          } else {
+            $("#txt_alert").html("No se pudo eliminar el equipo");
+            $("#alert_registro").fadeIn();
+          }
+        });
+      });
+      
     } else {
       $('#table_equipos').empty();
     }            
@@ -133,40 +165,63 @@ function init_equipos(){
       $("#main_container").html(response);
       init_nuevo_equipo();
     });
+  });    
+}
+  
+  
+function init_nuevo_equipo(){    
+  $.get('/adm/get_equipo_data', function(response) {
+    grupos = response.grupos;    
+
+    $.each(grupos, function() {
+      $("#grupo").append($("<option />").val(this).text(this));      
+    });   
+
+    //Si es edicion poblamos los selects
+    if( equipo_edi != null ){
+      $("#nombre").val( equipo_edi.nombre );
+      $("#nombre_corto").val( equipo_edi.nombre_corto );
+      $("#url_bandera").val( equipo_edi.url_bandera );
+      $("#grupo").val( equipo_edi.grupo );
+
+      $("#btn_registrar").fadeOut();
+      $("#btn_actualizar").fadeIn();
+    }
+
+    $("#main_container").fadeIn();
+    $("#loader").fadeOut();
   });
-  
-  
-  function init_nuevo_equipo(){    
-    $.get('/adm/get_equipo_data', function(response) {
-      grupos = response.grupos;    
 
-      $.each(grupos, function() {
-        $("#grupo").append($("<option />").val(this).text(this));      
-      });        
 
-      $("#main_container").fadeIn();
-      $("#loader").fadeOut();
-    });
+  $('form').submit(function(event) {    
+    event.preventDefault();      
 
-  
-    $('form').submit(function(event) {    
-      event.preventDefault();      
+    var equipo = {
+      nombre: $("#nombre").val(),
+      nombre_corto: $("#nombre_corto").val(),
+      url_bandera: $("#url_bandera").val(),
+      grupo: $("#grupo").val()
+    };        
 
-      var equipo = {
-        nombre: $("#nombre").val(),
-        nombre_corto: $("#nombre_corto").val(),
-        url_bandera: $("#url_bandera").val(),
-        grupo: $("#grupo").val()
-      };        
-
+    if( equipo_edi == null ){
       $.post('/adm/set_equipo?' + $.param({equipo: equipo}) , function(response) {
          if( response.success ){
            window.location.href = '/adm/equipos';
          } else {
-           $("#alert_login").fadeIn();
+           $("#txt_alert").html("No se pudo registrar el equipo");
+           $("#alert_registro").fadeIn();
          }
       });
-    });  
-}   
-  
+    } else {
+      equipo._id = equipo_edi._id;
+      $.post('/adm/upd_equipo?' + $.param({equipo: equipo}) , function(response) {
+         if( response.success ){
+           window.location.href = '/adm/equipos';
+         } else {
+           $("#txt_alert").html("No se pudo actualizar el equipo");
+           $("#alert_registro").fadeIn();
+         }
+      });
+    }
+  });      
 }

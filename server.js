@@ -191,8 +191,7 @@ app.get("/equipos_db", function (request, response) {
        console.log(err);       
        response.send({success: false});
      }                           
-     equipos = equips;  
-     console.log(equipos);
+     equipos = equips;       
      response.send({success: true, equipos: equipos});
   }); 
 });
@@ -220,6 +219,28 @@ app.post("/adm/set_equipo", function (request, response) {
   
   if( app_session.usuario ){  
     c_equipo.set_equipo(client_db, request.query.equipo, response);
+  } else {    
+    response.redirect('/adm_login');
+  }
+});
+
+app.post("/adm/upd_equipo", function (request, response) {    
+  app_session = request.session;
+  
+  if( app_session.usuario ){  
+    request.query.equipo._id = new mongodb.ObjectId(request.query.equipo._id);
+    c_equipo.upd_equipo(client_db, request.query.equipo, response);    
+  } else {    
+    response.redirect('/adm_login');
+  }
+});
+
+app.post("/adm/del_equipo", function (request, response) {    
+  app_session = request.session;
+  
+  if( app_session.usuario ){  
+    console.log(request.query.equipo);    
+    c_equipo.del_equipo(client_db, new mongodb.ObjectId(request.query.equipo._id), response);
   } else {    
     response.redirect('/adm_login');
   }

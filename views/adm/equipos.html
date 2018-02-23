@@ -62,6 +62,7 @@
                   <th>Nombre Corto</th>                  
                   <th>Bandera</th>                  
                   <th>Grupo</th>                  
+                  <th colspan="2"></th>                  
                 </tr>
               </thead>
               <tbody>                
@@ -71,6 +72,24 @@
         </main>        
         </div>        
     </div>
+    
+    <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            Eliminar
+        </div>
+        <div id="msj_delete" class="modal-body">
+            Esta seguro de eliminar el equipo y toda la informacion relacionada?                
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button id="btn_delete" type="button" class="btn btn-danger success">Eliminar</button>
+        </div>
+      </div>
+    </div>
+    
     <div id="loader" class="text-center">
       <img src="https://cdn.glitch.com/9c4de69b-f9b0-488b-92bf-01fcb9ea22ee%2Floader.GIF?1519134332388" />
     </div>      
