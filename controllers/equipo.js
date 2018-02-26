@@ -11,7 +11,7 @@ module.exports.get_equipos = (cliente_db, response) => {
 };
 
 module.exports.set_equipo = (client_db, request, equipo, response) => {	                 
-  var path = require('path'),fs = require('fs');
+  var path = require('path'),fs = require('fs');  
   fs.exists(request.files.file.path, (existe) => {
     if( !existe ){
       response.send({success: false, message: "El archivo no se subio al servidor"});
@@ -72,9 +72,9 @@ module.exports.upd_equipo = (client_db, equipo, response) => {
 
 module.exports.del_equipo = (client_db, id_equipo, url_bandera, response) => {	                    
   var path = require('path'),fs = require('fs');
-  var img_server = path.resolve( "public/"+url_bandera );
+  var img_server = path.resolve( "public/"+url_bandera );  
   fs.exists(img_server, (existe) => {
-    if( existe ){
+    if( existe && fs.lstatSync(img_server).isFile() ){
       fs.unlink(img_server, function (err) {
           if (err) { 
             console.log(err);

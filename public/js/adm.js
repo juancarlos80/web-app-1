@@ -181,7 +181,10 @@ function init_nuevo_equipo(){
     if( equipo_edi != null ){
       $("#nombre").val( equipo_edi.nombre );
       $("#nombre_corto").val( equipo_edi.nombre_corto );
-      $("#url_bandera").val( equipo_edi.url_bandera );
+      //$("#file").fadeOut();
+      $("#file").remove();
+      $("#img_bandera").attr("src", "../"+equipo_edi.url_bandera);
+      $("#img_bandera").fadeIn();
       $("#grupo").val( equipo_edi.grupo );
 
       $("#btn_registrar").fadeOut();
@@ -203,7 +206,7 @@ function init_nuevo_equipo(){
       grupo: $("#grupo").val()
     };        
 
-    if( equipo_edi == null ){
+    if( equipo_edi == null ){      
       var data = new FormData();
       $.each(jQuery('#file')[0].files, function(i, file) {
         data.append('file', file );
@@ -230,6 +233,7 @@ function init_nuevo_equipo(){
       });
     } else {
       equipo._id = equipo_edi._id;
+      equipo.url_bandera = equipo_edi.url_bandera;
       $.post('/adm/upd_equipo?' + $.param({equipo: equipo}) , function(response) {
          if( response.success ){
            window.location.href = '/adm/equipos';
