@@ -72,23 +72,31 @@ module.exports.upd_equipo = (client_db, equipo, response) => {
 
 module.exports.del_equipo = (client_db, id_equipo, url_bandera, response) => {	                    
   var path = require('path'),fs = require('fs');
-  fs.exists(targetPath, (existe) => {
-    
-  
+  var img_server = path.resolve( "public/"+url_bandera );
+  fs.exists(img_server, (existe) => {
+    if( existe ){
+      fs.unlink(img_server, function (err) {
+          if (err) { 
+            console.log(err);
+            response.send ( { success: false, message: "Error al eliminar el equipo" } );
+            return;
+          }              
+          module.exports.del_equipo_db( client_db, id_equipo, response );
+      });
+    } else {
+      module.exports.del_equipo_db( client_db, id_equipo, response );
+    }  
   });
-  var equipo_db = client_db.db("test").collection('equipos');        
+}
   
+module.exports.del_equipo_db = (client_db, id_equipo, response) => {	                    
+  var equipo_db = client_db.db("test").collection('equipos');          
   equipo_db.deleteOne({_id:id_equipo}, function (err, res) {    
      if(err) {
        console.log(err);         
        response.send ( { success: false, message: "Error al eliminar el equipo" } );
      } else {
-       console.log("Equipo Eliminado"); 
-       
-       
-       /*fs.unlink(tempPath, function (err) {
-            if (err) throw err;              
-        });*/
+       console.log("Equipo Eliminado");        
        response.send ( { success: true } );
      }       
   });                                     

@@ -189,7 +189,7 @@ app.post("/adm/del_equipo", function (request, response) {
   
   if( app_session.usuario ){  
     console.log(request.query.equipo);    
-    c_equipo.del_equipo(client_db, new mongodb.ObjectId(request.query.equipo._id), request.query.equipourl_bandera, response);
+    c_equipo.del_equipo(client_db, new mongodb.ObjectId(request.query.equipo._id), request.query.equipo.url_bandera, response);
   } else {    
     response.redirect('/adm_login');
   }
