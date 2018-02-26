@@ -10,18 +10,50 @@ module.exports.get_equipos = (cliente_db, response) => {
   });                                     
 };
 
-module.exports.set_equipo = (client_db, equipo, response) => {	                 
-  var equipo_db = client_db.db("test").collection('equipos');        
+module.exports.set_equipo = (client_db, request, equipo, response) => {	                 
+  var path = require('path'),fs = require('fs');
+  fs.exists(request.files.file.path, (existe) => {
+    if( !existe ){
+      response.send({success: false, message: "El archivo no se subio al servidor"});
+      return;
+    }
+    
+    var tempPath = request.files.file.path;      
+    var dir_banderas = "img/banderas/";     
+    var url_bandera = dir_banderas+request.files.file.name;
+    var targetPath = path.resolve( "public/"+url_bandera );
 
-  equipo_db.insertOne(equipo, function (err, equi) {
-     if(err) {
-       console.log(err);         
-       response.send ( { success: false, message: "Error al insertar el equipo" } );
-     } else {
-       console.log("Nuevo equipo insertado");
-       response.send ( { success: true, equipo: equi } );
-     }       
-  });                                     
+    fs.exists(targetPath, (existe) => {
+      if( existe ){
+        response.send({success: false, message: "Ya existe una imagen con ese nombre"});
+        return;
+      }      
+      console.log(request.files);
+
+      if (path.extname(request.files.file.name).toLowerCase() === '.png' ||
+              path.extname(request.files.file.name).toLowerCase() === '.jpg' ||
+              path.extname(request.files.file.name).toLowerCase() === '.jpeg') {
+          fs.createReadStream(tempPath).pipe(fs.createWriteStream(targetPath));
+          request.query.equipo.url_bandera = url_bandera;
+            
+          var equipo_db = client_db.db("test").collection('equipos');        
+          equipo_db.insertOne(equipo, function (err, equi) {
+             if(err) {
+               console.log(err);         
+               response.send ( { success: false, message: "Error al insertar el equipo" } );
+             } else {
+               console.log("Nuevo equipo insertado");
+               response.send ( { success: true, equipo: equi } );
+             }       
+          });                                              
+      } else {
+        fs.unlink(tempPath, function (err) {
+            if (err) throw err;              
+        });
+        response.send({success: false, message: "Solo se pueden subir imagenes en las banderas"});
+      } 
+    });  
+  }); 
 };
 
 module.exports.upd_equipo = (client_db, equipo, response) => {	                 
@@ -38,15 +70,25 @@ module.exports.upd_equipo = (client_db, equipo, response) => {
   });                                     
 };
 
-module.exports.del_equipo = (client_db, id_equipo, response) => {	                 
+module.exports.del_equipo = (client_db, id_equipo, url_bandera, response) => {	                    
+  var path = require('path'),fs = require('fs');
+  fs.exists(targetPath, (existe) => {
+    
+  
+  });
   var equipo_db = client_db.db("test").collection('equipos');        
-
+  
   equipo_db.deleteOne({_id:id_equipo}, function (err, res) {    
      if(err) {
        console.log(err);         
        response.send ( { success: false, message: "Error al eliminar el equipo" } );
      } else {
-       console.log("Equipo Eliminado");       
+       console.log("Equipo Eliminado"); 
+       
+       
+       /*fs.unlink(tempPath, function (err) {
+            if (err) throw err;              
+        });*/
        response.send ( { success: true } );
      }       
   });                                     

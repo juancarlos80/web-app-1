@@ -1,4 +1,4 @@
-<form class="form-signin">
+<form class="form-signin" enctype="multipart/form-data">
   <h1 class="h3 mb-3 font-weight-normal">Registrar un equipo</h1>
   
   <label for="nombre" class="sr-only">Nombre</label>  
@@ -7,9 +7,9 @@
   <label for="nombre_corto" class="sr-only">Nombre Corto</label>  
   <input id="nombre_corto" size="16" type="text" class="form-control" value="" placeholder="Nombre corto" required>
   
-  <label for="url_bandera" class="sr-only">URL Bandera</label>  
-  <input id="url_bandera" size="16" type="text" class="form-control" value="" placeholder="URL Bandera" required>
-  
+  <label for="file" class="sr-only">Bandera</label>    
+  <img src='' class='img-thumbnail' alt='Bandera' style="display:none" />
+  <input id="file" type="file" name="file" class="form-control" placeholder="URL Bandera" required>
   Grupo: <select id="grupo" class="custom-select"></select>      
   
   <div id="alert_registro" class="alert alert-warning mt-5" style="display:none">         

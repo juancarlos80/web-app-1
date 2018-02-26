@@ -204,13 +204,29 @@ function init_nuevo_equipo(){
     };        
 
     if( equipo_edi == null ){
-      $.post('/adm/set_equipo?' + $.param({equipo: equipo}) , function(response) {
+      var data = new FormData();
+      $.each(jQuery('#file')[0].files, function(i, file) {
+        data.append('file', file );
+      });
+      
+      //data.append('equipo', equipo);
+      
+      $.ajax({
+        url: '/adm/set_equipo?'+$.param({equipo: equipo}),
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        success: function(response) {
+      //$.post('/adm/set_equipo?' + $.param({equipo: equipo}) , function(response) {
          if( response.success ){
            window.location.href = '/adm/equipos';
          } else {
-           $("#txt_alert").html("No se pudo registrar el equipo");
+           $("#txt_alert").html("No se pudo registrar el equipo: "+ response.message);
            $("#alert_registro").fadeIn();
          }
+        }
       });
     } else {
       equipo._id = equipo_edi._id;

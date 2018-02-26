@@ -18,6 +18,9 @@ var app_session;
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( {extended: true} ) );
 
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+
 app.use(express.static('public'));
 
 
@@ -25,62 +28,8 @@ app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-
 //Variables gloables
 var equipos = null;
-/*var equipos = [
-  {
-    _id: '1',
-    nombre: 'Argentina',
-    nombre_corto: 'arg',
-    url_bandera: 'banderas/arg.jpg',
-    grupo: 'A'
-  },
-  {
-    _id: '2',
-    nombre: 'Bolivia',
-    nombre_corto: 'Bol',
-    url_bandera: 'banderas/bol.jpg',
-    grupo: 'B'
-  },
-  {
-    _id: '3',
-    nombre: 'Brasil',
-    nombre_corto: 'bra',
-    url_bandera: 'banderas/bar.jpg',
-    grupo: 'B'
-  },
-  {
-    _id: '4',
-    nombre: 'Colombia',
-    nombre_corto: 'col',
-    url_bandera: 'banderas/col.jpg',
-    grupo: 'A'
-  },  
-  {
-    _id: '5',
-    nombre: 'Chile',
-    nombre_corto: 'cli',
-    url_bandera: 'banderas/cli.jpg',
-    grupo: 'C'
-  },  
-  {
-    _id: '6',
-    nombre: 'Costa Rica',
-    nombre_corto: 'cos',
-    url_bandera: 'banderas/cos.jpg',
-    grupo: 'B'
-  },  
-  {
-    _id: '7',
-    nombre: 'Ecuador',
-    nombre_corto: 'ecu',
-    url_bandera: 'banderas/ecu.jpg',
-    grupo: 'A'
-  },  
-];*/
-
-//Valores a configurar para inicializar la applicacion
 var niveles = ["Inicial", "Cuartos de Final", "Semifinal", "Tercer Lugar", "Primer Lugar"]; 
 var grupos = ["A", "B", "C", "D"]; 
 
@@ -214,14 +163,14 @@ app.get("/adm/nuevo_equipo", function (request, response) {
     response.sendFile(__dirname + '/views/adm/nuevo_equipo.html');  
 });
 
-app.post("/adm/set_equipo", function (request, response) {    
-  app_session = request.session;
-  
+app.post("/adm/set_equipo", multipartMiddleware, function (request, response) {    
+  app_session = request.session;   
+    
   if( app_session.usuario ){  
-    c_equipo.set_equipo(client_db, request.query.equipo, response);
+    c_equipo.set_equipo(client_db, request, request.query.equipo, response);
   } else {    
     response.redirect('/adm_login');
-  }
+  }                            
 });
 
 app.post("/adm/upd_equipo", function (request, response) {    
@@ -240,7 +189,7 @@ app.post("/adm/del_equipo", function (request, response) {
   
   if( app_session.usuario ){  
     console.log(request.query.equipo);    
-    c_equipo.del_equipo(client_db, new mongodb.ObjectId(request.query.equipo._id), response);
+    c_equipo.del_equipo(client_db, new mongodb.ObjectId(request.query.equipo._id), request.query.equipourl_bandera, response);
   } else {    
     response.redirect('/adm_login');
   }
